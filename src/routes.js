@@ -5,6 +5,7 @@ const routes = express.Router();
 
 
 const CargosController = require('./controllers/CargosController');
+const ParticipantesController = require('./controllers/ParticipantesController');
 
 //listagem de cargos
 routes.get('/cargos', CargosController.index);
@@ -26,5 +27,27 @@ routes.put('/cargos/:id', celebrate({
         id: Joi.number().required()
     })
 }), CargosController.update);
+
+//listagem de participantes
+routes.get('/participantes', ParticipantesController.index);
+//cadastro de participantes
+routes.post('/participantes', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        nome: Joi.string().required(),
+        cargo_id: Joi.number().required()
+    })
+}), ParticipantesController.create);
+//editar participantes
+routes.put('/participantes/:id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().required()
+    })
+}), ParticipantesController.update);
+//deletar participantes
+routes.delete('/participantes/:id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().required()
+    })
+}), ParticipantesController.delete);
 
 module.exports = routes;

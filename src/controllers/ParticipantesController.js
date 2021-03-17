@@ -2,17 +2,18 @@ const connection = require('../database/connection');
 
 module.exports = {
     async index(request, response) {
-        const cargos = await connection('cargos').select('*');
+        const participantes = await connection('participantes').select('*');
 
-        return response.json(cargos);
+        return response.json(participantes);
     },
 
     async create(request, response) {
-        const { nome } = request.body;
+        const { nome, cargo_id } = request.body;
         
         try {
-            const [id] = await connection('cargos').insert({
-                nome
+            const [id] = await connection('participantes').insert({
+                nome,
+                cargo_id
             });
 
             return response.status(201).json({ id });
@@ -23,13 +24,14 @@ module.exports = {
 
     async update(request, response) {
         const { id } = request.params;
-        const { nome } = request.body;
+        const { nome, cargo_id } = request.body;
         
         try {
-            await connection('cargos')
+            await connection('participantes')
                 .where('id', id)
                 .update({
-                nome
+                nome,
+                cargo_id
                 });
 
             return response.status(200).json({ message: 'Updated succesfully.' });
@@ -42,7 +44,7 @@ module.exports = {
         const { id } = request.params;
 
         try {
-            await connection('cargos')
+            await connection('participantes')
                 .where('id', id)
                 .delete();
 

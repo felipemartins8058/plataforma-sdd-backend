@@ -16,6 +16,20 @@ module.exports = {
     useNullAsDefault: true
   },
 
+  test: {
+    client: 'mysql2',
+    connection: {
+      host: '127.0.0.1',
+      user: 'root',
+      password: 'root1234',
+      database: 'plataforma_sdd'
+    },
+    migrations: {
+      directory: './src/database/migrations'
+    },
+    useNullAsDefault: true
+  },
+
   staging: {
     client: 'postgresql',
     connection: {

@@ -7,6 +7,7 @@ const routes = express.Router();
 const CargosController = require('./controllers/CargosController');
 const ParticipantesController = require('./controllers/ParticipantesController');
 const SalaController = require('./controllers/SalaController');
+const ParticipantesSalasController = require('./controllers/ParticipantesSalasController');
 
 //listagem de cargos
 routes.get('/cargos', CargosController.index);
@@ -53,7 +54,15 @@ routes.delete('/participantes/:id', celebrate({
 
 //listagem de salas
 routes.get('/salas', SalaController.index);
-//cadastro de ongs
+//cadastro de sala
 routes.post('/salas', SalaController.create);
+//buscar sala
+routes.get('/salas/:id', SalaController.search);
+
+//entrar em sala
+routes.post('/participantessalas/:sala_id', ParticipantesSalasController.joinSala);
+
+// listagem de participantes e suas salas
+routes.get('/participantessalas', ParticipantesSalasController.index);
 
 module.exports = routes;

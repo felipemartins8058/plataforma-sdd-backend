@@ -5,18 +5,18 @@ function generateSala() {
     return checkSala(generateUniqueSala());
 }
 
-async function checkSala(senha) { //verifica se a sala criada randomicamente já existe
+async function checkSala(id) { //verifica se a sala criada randomicamente já existe
     // retorna verdadeiro se a senha já existir
     const checkSalaSenha = await connection('salas')
         .select('*')
-        .where('senha', senha)
+        .where('id', id)
         .first();
     
     while (checkSalaSenha) { //enquanto a senha criada existir ele vai criando um novo
-        senha = generateSala();
+        id = generateSala();
     }
 
-    return senha;
+    return id;
 }
 
 module.exports = {
@@ -27,16 +27,31 @@ module.exports = {
     },
 
     async create(request, response) {
-        const senha = await generateSala();
+        const id = await generateSala();
 
         try {
             await connection('salas').insert({ //como é assincrono, ele espera essa função terminar para seguir com o resto do código
-                senha
+                id
             });
 
-            return response.json({ senha });
+            return response.json({ id });
         } catch (error) {
             return response.status(500).json({ error: error });
         }
     },
+
+    async search(request, response) {
+        const { id } = request.params;
+
+        try {	
+            const sala = await connection('salas')
+            .select(['salas.*'])
+            .where('salas.id', id);
+    
+            response.status(200).json({sala});
+        } catch (error) {
+            response.status(500).json({ error: error });
+            console.log(error);
+        }
+    }
 };

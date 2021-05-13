@@ -1,8 +1,7 @@
 
 exports.up = function(knex) { //criação da tabela
     return knex.schema.createTable('salas', function(table){
-        table.increments();
-        table.string('senha').notNullable();
+        table.string('id').primary();
     })
 };
 

@@ -14,21 +14,18 @@ routes.get('/cargos', CargosController.index);
 //cadastro de cargos
 routes.post('/cargos', celebrate({
     [Segments.BODY]: Joi.object().keys({
-        nome: Joi.string().required()
+        nome: Joi.string().required(),
+        grupo: Joi.string().required()
     })
 }), CargosController.create);
-//deletar cargos
-routes.delete('/cargos/:id', celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-        id: Joi.number().required()
-    })
-}), CargosController.delete);
 //editar cargos
 routes.put('/cargos/:id', celebrate({
     [Segments.PARAMS]: Joi.object().keys({
         id: Joi.number().required()
     })
 }), CargosController.update);
+//listagem dos cargos disponíveis
+routes.get('/cargos/:sala_id', CargosController.availableCargos);
 
 //listagem de participantes
 routes.get('/participantes', ParticipantesController.index);
@@ -60,7 +57,15 @@ routes.post('/salas', SalaController.create);
 routes.get('/salas/:id', SalaController.search);
 
 //entrar em sala
-routes.post('/participantessalas/:sala_id', ParticipantesSalasController.joinSala);
+routes.post('/participantessalas/:sala_id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        sala_id: Joi.string().required()
+    }),
+    [Segments.BODY]: Joi.object().keys({
+        nome: Joi.string().required(),
+        cargo_id: Joi.number().required()
+    })
+}), ParticipantesSalasController.joinSala);
 
 // listagem de participantes e suas salas
 routes.get('/participantessalas', ParticipantesSalasController.index);

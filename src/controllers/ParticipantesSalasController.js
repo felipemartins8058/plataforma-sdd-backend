@@ -2,7 +2,9 @@ const connection = require('../database/connection');
 
 module.exports = {
     async index (request, response) {
-        const participantes_salas = await connection('participantes_salas').select('*');
+        const participantes_salas = await connection('participantes_salas')
+            .leftJoin('cargos','participantes_salas.cargo_id', 'cargos.id')
+            .select(['participantes_salas.*', 'cargos.grupo', 'cargos.id']);
         
         return response.json(participantes_salas);
     },

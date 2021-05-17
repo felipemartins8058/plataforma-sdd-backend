@@ -8,11 +8,12 @@ module.exports = {
     },
 
     async create(request, response) {
-        const { nome } = request.body;
+        const { nome, grupo } = request.body;
         
         try {
             const [id] = await connection('cargos').insert({
-                nome
+                nome,
+                grupo
             });
 
             return response.status(201).json({ id });
@@ -29,7 +30,7 @@ module.exports = {
             await connection('cargos')
                 .where('id', id)
                 .update({
-                nome
+                    nome
                 });
 
             return response.status(200).json({ message: 'Updated succesfully.' });
@@ -38,17 +39,21 @@ module.exports = {
         }
     },
 
-    async delete(request, response) {
-        const { id } = request.params;
-
+    async availableCargos(request, response) {
+        const { sala_id } = request.params;
+        
         try {
-            await connection('cargos')
-                .where('id', id)
-                .delete();
+            const cargos_disponiveis = await connection('cargos')
+            .select(['cargos.*'])
+            .leftJoin('participantes_salas', function () {
+                this.on('cargos.id', '=', 'participantes_salas.cargo_id')
+                this.andOnVal('participantes_salas.sala_id', '=' , sala_id)
+            })
+            .where('participantes_salas.cargo_id', null);
 
-            return response.status(200).json({ message: 'Deleted succesfully' });
+            return response.json(cargos_disponiveis);
         } catch (error) {
-            return response.status(500).json({ error: error });
+            response.status(500).json({ error: error });
         }
-    },
+    }
 };
